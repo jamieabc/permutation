@@ -1,11 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
-	str := "ABCDE"
+	str := "EDACA"
 	length := len(str)
 	track := make([]bool, length)
+	bs := []byte(str)
+	sort.Slice(bs, func(i, j int) bool {
+		return bs[i] <= bs[j]
+	})
+	str = string(bs)
 
 	permutation(str, "", track)
 }
@@ -25,7 +33,7 @@ func main() {
 // understand the meaning by hand calculation.
 
 func permutation(str, result string, track []bool) {
-	for i := range track {
+	for i := 0; i < len(track); i++ {
 		if track[i] {
 			continue
 		}
@@ -33,6 +41,13 @@ func permutation(str, result string, track []bool) {
 		track[i] = true
 		permutation(str, result+string(str[i]), track)
 		track[i] = false
+
+		for j := i + 1; j < len(track); j++ {
+			if str[j] != str[i] {
+				i = j - 1
+				break
+			}
+		}
 	}
 
 	if len(result) == len(str) {
